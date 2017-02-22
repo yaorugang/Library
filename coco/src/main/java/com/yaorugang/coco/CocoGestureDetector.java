@@ -245,11 +245,13 @@ public class CocoGestureDetector implements Runnable
         boolean onDown(MotionEvent e);
 
         /**
+         * 手指按下不动超过400毫秒（默认）即触发此事件，可以通过调用setLongPressInterval(long interval)函数更改这个阙值。
          * @param e the initial on down motion event that started the longpress
          */
         void onLongPressed(MotionEvent e);
 
         /**
+         * 手指按下立即开始滑动，将连续触发此事件。
          * @param e1 the first down motion event that started the moving
          * @param e2 the move motion event that triggered the current onMove
          * @return true if the event is consumed, else false
@@ -257,6 +259,7 @@ public class CocoGestureDetector implements Runnable
         void onMove(MotionEvent e1, MotionEvent e2, int direction);
 
         /**
+         * 长按以后开始移动，将会连续触发此事件。
          * @param e1 the first down motion event that started the moving
          * @param e2 the move motion event that triggered the current onMove
          * @return true if the event is consumed, else false
@@ -264,6 +267,7 @@ public class CocoGestureDetector implements Runnable
         void onLongPressedMove(MotionEvent e1, MotionEvent e2, int direction);
 
         /**
+         * 手指按下后立即开始滑动，当手指抬起时触发此事件。
          * @param e1 the first down motion event that started the swiping
          * @param e2 the up motion event that triggered the swiping
          * @param direction indicating the swiping direction, values ranging from 0 to 7 inclusive.
@@ -272,6 +276,7 @@ public class CocoGestureDetector implements Runnable
         boolean onSwipe(MotionEvent e1, MotionEvent e2, int direction);
 
         /**
+         * 长按以后再开始滑动，手指抬起时触发此事件。
          * @param e1 the first down motion event that started the long pressed swiping
          * @param e2 the up motion event that triggered the long pressed swiping
          * @param direction indicating the swiping direction, values ranging from 0 to 7 inclusive.
@@ -280,12 +285,14 @@ public class CocoGestureDetector implements Runnable
         boolean onLongPressedSwipe(MotionEvent e1, MotionEvent e2, int direction);
 
         /**
+         * 手指快速单击事件。
          * @param e the up motion event that completed the single tap
          * @return true if the event is consumed, else false
          */
         boolean onSingleTapUp(MotionEvent e);
 
         /**
+         * 长按以后没有移动，直接抬起将会触发此事件。
          * @param e the up motion event that completed the long pressed tap
          * @return true if the event is consumed, else false
          */
