@@ -254,6 +254,8 @@ public class CocoGestureDetector implements Runnable
          * 手指按下立即开始滑动，将连续触发此事件。
          * @param e1 the first down motion event that started the moving
          * @param e2 the move motion event that triggered the current onMove
+         * @param direction 移动的方向。圆周共分12个方向，每个方向范围为30度。垂直向下也就是与Y轴夹角左右各15度的
+         *                  范围为方向0，逆时针每30度递增1，直到方向11结束。
          * @return true if the event is consumed, else false
          */
         void onMove(MotionEvent e1, MotionEvent e2, int direction);
@@ -262,6 +264,8 @@ public class CocoGestureDetector implements Runnable
          * 长按以后开始移动，将会连续触发此事件。
          * @param e1 the first down motion event that started the moving
          * @param e2 the move motion event that triggered the current onMove
+         * @param direction 移动的方向。圆周共分12个方向，每个方向范围为30度。垂直向下也就是与Y轴夹角左右各15度的
+         *                  范围为方向0，逆时针每30度递增1，直到方向11结束。
          * @return true if the event is consumed, else false
          */
         void onLongPressedMove(MotionEvent e1, MotionEvent e2, int direction);
@@ -270,7 +274,8 @@ public class CocoGestureDetector implements Runnable
          * 手指按下后立即开始滑动，当手指抬起时触发此事件。
          * @param e1 the first down motion event that started the swiping
          * @param e2 the up motion event that triggered the swiping
-         * @param direction indicating the swiping direction, values ranging from 0 to 7 inclusive.
+         * @param direction 移动的方向。圆周共分12个方向，每个方向范围为30度。垂直向下也就是与Y轴夹角左右各15度的
+         *                  范围为方向0，逆时针每30度递增1，直到方向11结束。
          * @return true if the event is consumed, else false
          */
         boolean onSwipe(MotionEvent e1, MotionEvent e2, int direction);
@@ -279,7 +284,8 @@ public class CocoGestureDetector implements Runnable
          * 长按以后再开始滑动，手指抬起时触发此事件。
          * @param e1 the first down motion event that started the long pressed swiping
          * @param e2 the up motion event that triggered the long pressed swiping
-         * @param direction indicating the swiping direction, values ranging from 0 to 7 inclusive.
+         * @param direction 移动的方向。圆周共分12个方向，每个方向范围为30度。垂直向下也就是与Y轴夹角左右各15度的
+         *                  范围为方向0，逆时针每30度递增1，直到方向11结束。
          * @return true if the event is consumed, else false
          */
         boolean onLongPressedSwipe(MotionEvent e1, MotionEvent e2, int direction);
