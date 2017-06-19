@@ -11,9 +11,9 @@ public class DirectionTool
     /**
      * 判断是否向右滑动。判断标准为：如果向右滑动的方向与X轴夹角小于等于30度（无论向右上还是右下），
      * 并且滑动的直线距离大于15dp，则认定为向右的有效滑动。
-     * @param start
-     * @param end
-     * @return
+     * @param start 滑动起点坐标
+     * @param end 滑动结束坐标
+     * @return true if swiped to right, otherwise false will be returned
      */
     public static boolean isSwipeToRight(PointF start, PointF end)
     {
@@ -30,9 +30,12 @@ public class DirectionTool
     }
 
     /**
-    * 判断是否向上滑动。判断标准为：如果向上滑动的方向与X轴夹角大于60度，也就是与Y轴夹角小于30度（无论左上还是右上），
-    * 并且滑动的直线距离大于15dp，则认定为向上的有效滑动。
-    */
+     * 判断是否向上滑动。判断标准为：如果向上滑动的方向与X轴夹角大于60度，也就是与Y轴夹角小于30度（无论左上还是右上），
+     * 并且滑动的直线距离大于15dp，则认定为向上的有效滑动。
+     * @param start 滑动起点坐标
+     * @param end 滑动结束坐标
+     * @return true if swiped to up, otherwise false will be returned
+     */
     public static boolean isSwipeToUp(PointF start, PointF end)
     {
         if (end.y >= start.y)
