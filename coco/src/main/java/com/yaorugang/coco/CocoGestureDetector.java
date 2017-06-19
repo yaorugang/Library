@@ -149,7 +149,7 @@ public class CocoGestureDetector implements Runnable
             }
             catch (InterruptedException e)
             {
-
+                throw new RuntimeException("<CocoGestureDetector.run(): Unexpected interrupted on thread!");
             }
         }
     }
