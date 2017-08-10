@@ -16,7 +16,6 @@ public class CocoGestureDetector implements Runnable
 {
     private final static int COMMAND_LONG_PRESSED    = 0x11000F;
 
-    private Context mContext = null;
     private OnGestureListener mGestureListener = null;
 
     private long MIN_LONG_PRESSED_TIME = 400;           // 启动 long pressed 门限时间，单位毫秒。
@@ -25,12 +24,17 @@ public class CocoGestureDetector implements Runnable
     private boolean mImmediateMove = false;             // 是否按下后立刻滑动
     private boolean mLongPressedMove = false;           // 是否长按后移动
     private boolean mStartTimerForPress = false;        // 启动按下计时，用来辅助判断是否长按
-    private Thread mLongPressThread = null;             // 识别长按事件的线程
     private MotionEvent mDownMotionEvent;               // the first down motion event
+
+    private boolean willProcessMsg = false;
+    private float distanceX = 0.0f;
+    private float distanceY = 0.0f;
+    private double tangent;
+    private double degree;
+    private int direction;
 
     public CocoGestureDetector(Context context, CocoGestureDetector.OnGestureListener listener)
     {
-        mContext = context;
         mGestureListener = listener;
 
         // 初始化最小有效滑动距离为屏幕宽度的1/10。
@@ -40,8 +44,8 @@ public class CocoGestureDetector implements Runnable
         MIN_MOVE_DISTANCE = point.x / 15;
 
         // 启动长按识别线程
-        mLongPressThread = new Thread(this);
-        mLongPressThread.start();
+        Thread longPressThread = new Thread(this);
+        longPressThread.start();
     }
 
     public void setLongPressInterval(long interval)
@@ -58,7 +62,7 @@ public class CocoGestureDetector implements Runnable
         if (event.getPointerCount() > 1)
             return true;
 
-        boolean willProcessMsg = true;
+        willProcessMsg = true;
 
         switch (event.getActionMasked())
         {
@@ -137,7 +141,7 @@ public class CocoGestureDetector implements Runnable
             {
                 if (getPressedTime() > MIN_LONG_PRESSED_TIME)
                 {
-                    Message msg = new Message();
+                    Message msg = Message.obtain();
                     msg.what = COMMAND_LONG_PRESSED;
                     handler.sendMessage(msg);
                 }
@@ -187,8 +191,8 @@ public class CocoGestureDetector implements Runnable
 
     private double computeMoveDistance(MotionEvent e1, MotionEvent e2)
     {
-        float distanceX = e2.getX() - e1.getX();
-        float distanceY = e2.getY() - e1.getY();
+        distanceX = e2.getX() - e1.getX();
+        distanceY = e2.getY() - e1.getY();
 
         return Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
     }
@@ -196,10 +200,10 @@ public class CocoGestureDetector implements Runnable
     private int getMoveDirection(MotionEvent e1, MotionEvent e2)
     {
         // 计算滑动的横向距离。
-        float distanceX = e2.getX() - e1.getX();
+        distanceX = e2.getX() - e1.getX();
         // 计算滑动的纵向距离。以为屏幕的坐标原点(0, 0)是从左上角开始的，而后面我们在计算角度时采用标准数学坐标
         // 系，既向上移动为正值，向下移动为负值，所以这里需要使用距离的相反数。
-        float distanceY = -(e2.getY() - e1.getY());
+        distanceY = -(e2.getY() - e1.getY());
 
 
         // 计算正切值时，分母不可以为0。
@@ -208,32 +212,32 @@ public class CocoGestureDetector implements Runnable
         if (0 == distanceY)
             distanceY = 1;
 
-        double tangent = distanceY / distanceX; // 计算正切值
-        double degree = Math.toDegrees(Math.atan(tangent)); // 将正切值转换为角度
+        tangent = distanceY / distanceX; // 计算正切值
+        degree = Math.toDegrees(Math.atan(tangent)); // 将正切值转换为角度
 
         // 整个圆被划分为12个方向区域，每个区域占据30度，通过正切值计算出来的角度范围为-pi/2到pi/2，也就是说这一步
         // 的方向判断只能限定在Y轴的右侧部分
-        int nDirection = 0;
+        direction = 0;
         if (degree < -75)
-            nDirection = 0;
+            direction = 0;
         else if (degree < -45)
-            nDirection = 1;
+            direction = 1;
         else if (degree < -15)
-            nDirection = 2;
+            direction = 2;
         else if (degree < 15)
-            nDirection = 3;
+            direction = 3;
         else if (degree < 45)
-            nDirection = 4;
+            direction = 4;
         else if (degree < 75)
-            nDirection = 5;
+            direction = 5;
         else if (degree < 90)
-            nDirection = 6;
+            direction = 6;
 
         // 再根据滑动的X轴方向，来具体确定实际的滑动方向。
         if (distanceX < 0)
-            nDirection = (nDirection + 6) % 12;
+            direction = (direction + 6) % 12;
 
-        return nDirection;
+        return direction;
     }
 
     public interface OnGestureListener
